@@ -1,0 +1,13 @@
+TFile f("data15_13TeV.00270806.physics_Main.merge.AOD.f611_m1463.root")
+c1 = new TCanvas("c1","",400,800)
+TTree *t = (TTree *)f.Get("outTree")
+c1->Divide(1,2)
+
+c1->cd(1)
+t->Draw("jet_NegativeE:jet_HECQuality","","colz")
+gPad->SetLogz(1)
+
+c1->cd(2)
+t->Draw("trigjet_NegativeE:trigjet_HECQuality","","colz")
+gPad->SetLogz(1)
+
