@@ -1,0 +1,37 @@
+import ROOT
+from ROOT import gROOT, gDirectory, gPad, gSystem, gRandom
+from ROOT import TFile, TTree
+from ROOT import TF1, TF2, TH1F, TH2F
+
+gROOT.Reset()
+
+f = ROOT.TFile("/home/herjuno/Downloads/data15_13TeV.00270806.physics_Main.merge.AOD.f611_m1463.root")
+
+c1 = ROOT.TCanvas("c1","Trial Python",400,800)
+Hist_a = ROOT.TH2F("Hist_a", "Hist_a", 100, -10, 10, 100, -150000, 60000)
+Hist_a.GetXaxis().SetRangeUser(-5, 5)
+Hist_a.GetYaxis().SetRangeUser(-120000, 40000)
+
+Hist_b = ROOT.TH2F("Hist_b", "Hist_b", 100, -10, 10, 100, -150000, 60000)
+Hist_b.GetXaxis().SetRangeUser(-5, 5)
+Hist_b.GetYaxis().SetRangeUser(-120000, 40000)
+
+t1 = f.Get("outTree")
+t2 = f.Get("outTree")
+
+
+c1.Divide(1,2)
+
+c1.cd(1)
+t1.Draw("jet_NegativeE:jet_HECQuality>>Hist_a","","colz")
+Hist_a.GetXaxis().SetTitle("jet_HECQuality")
+Hist_a.GetYaxis().SetTitle("jet_NegativeE")
+gPad.SetLogz(1)
+
+c1.cd(2)
+t2.Draw("trigjet_NegativeE:trigjet_HECQuality>>Hist_b","","colz")
+Hist_b.GetXaxis().SetTitle("trigjet_HECQuality")
+Hist_b.GetYaxis().SetTitle("trigjet_NegativeE")
+gPad.SetLogz(1)
+
+raw_input()
