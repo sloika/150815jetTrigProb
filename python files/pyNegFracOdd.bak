@@ -3,11 +3,14 @@ from ROOT import gROOT, gDirectory, gPad, gSystem, gRandom, gStyle
 from ROOT import TFile, TTree
 from ROOT import TF1, TF2, TH1F, TH2F
 
+import AtlasStyle
+AtlasStyle.SetAtlasStyle()
+
 gROOT.Reset()
 
 f = ROOT.TFile("/home/herjuno/Downloads/data15_13TeV.00270806.physics_Main.merge.AOD.f611_m1463.root")
 
-c1 = ROOT.TCanvas("c1","Trial Python",400,800)
+c1 = ROOT.TCanvas("c1","Trial Python",800,1200)
 Hist_a = ROOT.TH2F("Hist_a", "", 100, -10, 10, 100, -150000, 60000)
 Hist_a.GetXaxis().SetRangeUser(-5, 5)
 Hist_a.GetYaxis().SetRangeUser(-120000, 40000)
@@ -18,35 +21,29 @@ Hist_b.GetYaxis().SetRangeUser(-120000, 40000)
 
 t1 = f.Get("outTree")
 t2 = f.Get("outTree")
-gStyle.SetStatX(0.4)
-gStyle.SetStatY(0.4)
+gStyle.SetStatX(0.82)
+gStyle.SetStatY(0.55)
+
+cu1 = ROOT.TCut("trigjet_pt>20")
+cu2 = ROOT.TCut("trigjet_pt>50")
+cu3 = ROOT.TCut("jet_eta<2.8")
 
 c1.Divide(1,2)
 
 c1.cd(1)
-t1.Draw("jet_NegativeE:jet_HECQuality>>Hist_a","","colz")
-Hist_a.GetXaxis().SetTitle("jet_HECQuality")
-Hist_a.GetYaxis().SetTitle("jet_NegativeE")
+t1.Draw("jet_NegativeE:jet_HECQuality>>Hist_a",cu1,"colz")
+AtlasStyle.ATLAS_LABEL(0.25, 0.8, internal = True, preliminary = False, color=1)
+AtlasStyle.myText(0.25, 0.75, 1, "#sqrt{s} = 13 TeV")
+AtlasStyle.myText(0.25, 0.70, 1, "From Run 00270806")
+Hist_a.GetXaxis().SetTitle("jet HEC quality")
+Hist_a.GetYaxis().SetTitle("jet Negative Energy [MeV]")
 gPad.SetLogz(1)
 
 c1.cd(2)
-t2.Draw("trigjet_NegativeE:trigjet_HECQuality>>Hist_b","","colz")
-Hist_b.GetXaxis().SetTitle("trigjet_HECQuality")
-Hist_b.GetYaxis().SetTitle("trigjet_NegativeE")
+t2.Draw("trigjet_NegativeE:trigjet_HECQuality>>Hist_b",cu1,"colz")
+Hist_b.GetXaxis().SetTitle("trigger jet HEC quality")
+Hist_b.GetYaxis().SetTitle("trigger jet Negative Energy [MeV]")
 gPad.SetLogz(1)
 
-'''(c1.GetPad(1).Update()
-stats1 = t1.GetListOfFunctions().FindObject("stats").Clone("stats1")
-stats1.SetY1NDC(.5)
-stats1.SetY2NDC(.7)
-
-c1.GetPad(2).Update()
-stats2 = t2.GetListOfFunctions().FindObject("stats").Clone("stats2")
-stats2.SetY1NDC(.5)
-stats2.SetY2NDC(.7)
-# move stats2 where you want it to be
-t1.Draw("same")
-stats1.Draw()
-stats2.Draw()'''
-
+#c1.Print("/home/herjuno/Documents/Git/150815jetTrigProb/output/180815/trigjetPtCut50.pdf")
 raw_input()
